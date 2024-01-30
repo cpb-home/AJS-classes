@@ -3,27 +3,10 @@ export default class Character {
     this.health = 100;
     this.level = 1;
 
-    switch (type) {
-      case 'Bowman':
-      case 'Undead':
-        this.attack = 25;
-        this.defence = 25;
-        this.type = type;
-        break;
-      case 'Swordsman':
-      case 'Zombie':
-        this.attack = 40;
-        this.defence = 10;
-        this.type = type;
-        break;
-      case 'Magician':
-      case 'Daemon':
-        this.attack = 10;
-        this.defence = 40;
-        this.type = type;
-        break;
-      default:
-        throw new Error('Ошибка type: Указан неверный тип персонажа');
+    if (['Bowman', 'Undead', 'Swordsman', 'Zombie', 'Magician', 'Daemon'].includes(type)) {
+      this.type = type;
+    } else {
+      throw new Error('Ошибка type: Указан неверный тип персонажа');
     }
     
     if (typeof name !== 'string') {
@@ -39,7 +22,7 @@ export default class Character {
 
   levelUp() {
     if (this.health <= 0) {
-      throw new Error('Ошибка: персонаж умер.');
+      throw new Error('Ошибка: персонаж уже умер.');
     } else {
       this.level += 1;
       this.health = 100;
@@ -49,10 +32,7 @@ export default class Character {
   }
 
   damage(points) {
-    if (this.health > 0) {
-      this.health -= points * (1 - this.defence / 100);
-    } else {
-      throw new Error('Персонаж пал смертью храбрых...');
-    }
+    this.health -= points * (1 - this.defence / 100);
+    this.health = this.health < 0 ? 0 : this.health;
   }
 }
